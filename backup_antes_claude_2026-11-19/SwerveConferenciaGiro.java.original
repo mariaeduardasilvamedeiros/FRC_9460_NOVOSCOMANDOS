@@ -1,0 +1,148 @@
+package frc.robot.subsystems.swerve;
+
+// #region 📚 IMPORTS
+
+import static frc.robot.subsystems.swerve.SwerveConstants.*;
+
+import edu.wpi.first.math.MathUtil;
+
+// #endregion
+
+/**
+ * Confere se o giro medido pelo encoder do NEO 550 (o do PID) acompanha o encoder
+ * absoluto do eixo do módulo (no roboRIO). Compara só com o módulo parado, a cada
+ * TURN_CHECK_WINDOW_DEGREES de giro: assim o atraso da leitura do Spark (até 20 ms,
+ * ~28° com o giro no máximo) não conta como erro.
+ *
+ * Pega: NEO 550 girando ao contrário do absoluto, DIO trocado com outro módulo,
+ * encoder solto ou fora do eixo e redução do giro errada. Errado em 2 janelas
+ * seguidas: acusa (o módulo para). Certo em 3 seguidas: libera de novo.
+ */
+final class SwerveConferenciaGiro {
+
+    // #region 📦 PARTE 1 - VARIÁVEIS E CONFIGURAÇÃO
+
+    // #region 🛑 MOTIVOS (aparecem na Driver Station)
+
+    /** O absoluto andou ao contrário do NEO 550 (ou é o encoder de outro módulo). */
+    static final String INVERTIDO = "GIRO_INVERTIDO_OU_ENCODER_TROCADO";
+    /** O NEO 550 girou o módulo e o absoluto quase não andou. */
+    static final String ABSOLUTO_PARADO = "ENCODER_ABSOLUTO_NAO_ACOMPANHA";
+    /** O absoluto andou e o NEO 550 deste módulo não: o DIO é de outro módulo. */
+    static final String ABSOLUTO_DE_OUTRO = "ENCODER_ABSOLUTO_DE_OUTRO_MODULO";
+    /** Mesmo sentido, mas a proporção não fecha (redução errada ou encoder patinando). */
+    static final String NAO_CONFERE = "GIRO_NAO_CONFERE";
+
+    // #endregion
+
+    // #region ⚙️ LIMITES
+
+    private static final int BAD_WINDOWS_TO_STOP = 2;
+    private static final int GOOD_WINDOWS_TO_CLEAR = 3;
+    // Absoluto andou menos que 20% do NEO 550: "parado".
+    private static final double STUCK_RATIO = 0.2;
+    private static final double WINDOW_RAD = Math.toRadians(TURN_CHECK_WINDOW_DEGREES);
+
+    // #endregion
+
+    // #region 📡 ESTADO DA JANELA
+
+    private boolean windowOpen;
+    private double startMotorRad;
+    private double absoluteTravelRad;
+    private double lastAbsoluteRad;
+    private int badWindows;
+    private int goodWindows;
+    private String problem;
+    private double lastRatio = Double.NaN;
+
+    // #endregion
+
+    // #endregion
+
+    // #region 🛠️ PARTE 2 - FUNÇÕES
+
+    // #region 🛠️ CONSULTAS
+
+    /** null = conferido (ou ainda sem janela completa); senão, o motivo para o módulo parar. */
+    String problem() {
+        return problem;
+    }
+
+    /** Absoluto ÷ NEO 550 na última janela: ~1,0 certo, negativo = sentido oposto. NaN antes da 1ª. */
+    double lastRatio() {
+        return lastRatio;
+    }
+
+    // #endregion
+
+    // #region ⚙️ JANELA
+
+    /** O encoder do NEO 550 foi realinhado (a posição saltou): recomeça a janela. */
+    void restartWindow() {
+        windowOpen = false;
+    }
+
+    private void openWindow(double motorRad, double absoluteRad) {
+        windowOpen = true;
+        startMotorRad = motorRad;
+        lastAbsoluteRad = absoluteRad;
+        absoluteTravelRad = 0.0;
+    }
+
+    // #endregion
+
+    // #endregion
+
+    // #region 🔁 PARTE 3 - LÓGICA
+
+    /**
+     * Um ciclo (20 ms).
+     *
+     * @param motorRad posição contínua do módulo pelo encoder do NEO 550 (rad)
+     * @param absoluteRad leitura do absoluto (rad, anti-horário; qualquer faixa)
+     * @param absoluteValid absoluto com sinal
+     * @param still módulo parado: as duas leituras assentadas
+     */
+    void update(double motorRad, double absoluteRad, boolean absoluteValid, boolean still) {
+        if (!absoluteValid || !Double.isFinite(motorRad) || !Double.isFinite(absoluteRad)) {
+            windowOpen = false;
+            return;
+        }
+        if (!windowOpen) {
+            if (still) openWindow(motorRad, absoluteRad);
+            return;
+        }
+        // Soma passo a passo: atravessa o 0°/360° sem salto (num ciclo o módulo gira < 30°).
+        absoluteTravelRad += MathUtil.angleModulus(absoluteRad - lastAbsoluteRad);
+        lastAbsoluteRad = absoluteRad;
+        if (!still) return;
+        double motorTravelRad = motorRad - startMotorRad;
+        if (Math.abs(motorTravelRad) < WINDOW_RAD && Math.abs(absoluteTravelRad) < WINDOW_RAD) return;
+        judge(motorTravelRad, absoluteTravelRad);
+        openWindow(motorRad, absoluteRad);
+    }
+
+    private void judge(double motorTravelRad, double absoluteTravelRad) {
+        lastRatio = Math.abs(motorTravelRad) > 1e-9 ? absoluteTravelRad / motorTravelRad : Double.NaN;
+        String verdict;
+        if (Math.abs(motorTravelRad) < WINDOW_RAD) {
+            verdict = ABSOLUTO_DE_OUTRO;
+        } else if (lastRatio >= TURN_CHECK_MIN_RATIO && lastRatio <= TURN_CHECK_MAX_RATIO) {
+            verdict = null;
+        } else if (Math.abs(lastRatio) < STUCK_RATIO) {
+            verdict = ABSOLUTO_PARADO;
+        } else {
+            verdict = lastRatio < 0.0 ? INVERTIDO : NAO_CONFERE;
+        }
+        if (verdict == null) {
+            badWindows = 0;
+            if (++goodWindows >= GOOD_WINDOWS_TO_CLEAR) problem = null;
+        } else {
+            goodWindows = 0;
+            if (++badWindows >= BAD_WINDOWS_TO_STOP) problem = verdict;
+        }
+    }
+
+    // #endregion
+}

@@ -1,0 +1,14 @@
+Cópia dos arquivos ANTES das mudanças de 19/11/2026 (Claude).
+Para voltar tudo: copiar cada .original por cima do arquivo com o mesmo nome (sem o .original)
+e apagar src/main/java/frc/robot/subsystems/swerve/SwerveSinalRepetido.java.
+
+Onde fica cada um:
+  README.md                    -> pasta do projeto
+  RobotContainer.java          -> src/main/java/frc/robot/
+  SwerveDirigirCommand.java    -> src/main/java/frc/robot/commands/swerve/
+  Swerve*.java (menos o Test)  -> src/main/java/frc/robot/subsystems/swerve/
+  SwerveTest.java              -> src/test/java/frc/robot/subsystems/swerve/
+  Robot.java                   -> src/main/java/frc/robot/
+  SwerveVisualizer.java        -> src/main/java/frc/robot/subsystems/swerve/
+Arquivos novos (apagar para voltar): config/gerar_layouts.py, config/advantagescope/layouts/FRC9460-Pendulo-*.json,
+  src/main/deploy/Elastic-Pendulo-Odometria.json

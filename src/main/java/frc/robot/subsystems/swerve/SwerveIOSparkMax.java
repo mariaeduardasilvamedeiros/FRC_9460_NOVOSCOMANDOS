@@ -1,0 +1,709 @@
+package frc.robot.subsystems.swerve;
+
+// #region 📚 IMPORTS
+
+import static frc.robot.subsystems.swerve.SwerveConstants.*;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.REVLibError;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.Faults;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import java.util.Locale;
+import java.util.function.DoubleSupplier;
+
+// #endregion
+
+/**
+ * Um módulo MAXSwerve real: Spark MAX + NEO na tração e Spark MAX + NEO 550 no giro.
+ * Neste robô o Through Bore Encoder (absoluto) está ligado direto no roboRIO (DIO),
+ * não no Spark. Por isso o PID do giro roda no Spark com o encoder do próprio NEO 550:
+ *
+ * 1. Ao ligar, com o módulo parado, a roda está reta (a equipe sempre liga assim): o
+ *    NEO 550 vai para 0° e a leitura do absoluto nessa hora vira o offset dele. Com
+ *    um offset escrito em SwerveConstants (diferente de 0.0), o 0° vem do absoluto (sem
+ *    sinal dele por 1 s ao ligar: zera com a roda reta e avisa, em vez de ficar parado).
+ * 2. Parado e longe do absoluto (folga, ou o Spark do giro reiniciou): realinha.
+ * 3. A cada 45° de giro, confere que os dois andaram juntos (SwerveConferenciaGiro).
+ * Sem o absoluto, o módulo anda só pelo NEO 550 (zerado ao ligar) e avisa.
+ *
+ * Configuração do template REV v2026.0 gravada nos Spark ao ligar: se um Spark reiniciar
+ * no meio do jogo, mantém limites, Brake, conversões e ganhos. Diagnóstico: firmware dos
+ * dois Spark na Driver Station ao ligar e o motivo de cada parada no status.
+ */
+public final class SwerveIOSparkMax implements SwerveIO {
+
+    // #region 📦 PARTE 1 - VARIÁVEIS E CONFIGURAÇÃO
+
+    // #region ⚙️ CONSTANTES DESTA CLASSE
+
+    // Through Bore V1 (REV-11-1271): pulso de 1 µs (0°) a 1024 µs (360°) em 1025 µs.
+    private static final double V1_PERIOD_US = 1025.0;
+    private static final double V1_FREQUENCY_HZ = 1e6 / V1_PERIOD_US;
+    // Sinal do absoluto por 5 ciclos seguidos (100 ms) antes de usar; sem sinal por 5
+    // ciclos depois de alinhado = aviso; sem sinal por 50 ciclos (1 s) ao ligar = parado.
+    private static final int ABSOLUTE_SIGNAL_CYCLES = 5;
+    private static final int ABSOLUTE_LOST_CYCLES = 5;
+    private static final int ABSOLUTE_MISSING_CYCLES = 50;
+    // Zero ao ligar: espera até 25 ciclos (0,5 s) pelo sinal do absoluto; sem ele, zera só
+    // pelo NEO 550.
+    private static final int ZERO_ABSOLUTE_WAIT_CYCLES = 25;
+    // Depois de mudar a posição do NEO 550, o Spark leva até 20 ms para mandar a nova.
+    private static final int SETTLE_CYCLES = 3;
+    // Parado = menos de 1° por ciclo nas duas leituras, por 3 ciclos seguidos.
+    private static final double STILL_STEP_RAD = Math.toRadians(1.0);
+    private static final int STILL_CYCLES = 3;
+    // A conferência do giro só julga depois de 5 ciclos parado (100 ms): a leitura do NEO 550
+    // pela CAN chega ~20 ms atrasada e a roda ainda assenta os últimos graus.
+    private static final int CHECK_STILL_CYCLES = 5;
+    // Diferença acima da tolerância por 5 ciclos parado (100 ms): realinha.
+    private static final int RESYNC_CYCLES = 5;
+    // Falha do Spark só vira aviso se aparecer igual em 5 leituras válidas seguidas.
+    private static final int FAULT_DEBOUNCE_CYCLES = 5;
+
+    // #endregion
+
+    // #region 🛠️ MOTORES E SENSORES
+
+    private final String name;
+    private final SparkMax driveMotor;
+    private final SparkMax turnMotor;
+    private final RelativeEncoder driveEncoder;
+    private final RelativeEncoder turnEncoder;
+    private final SparkClosedLoopController driveController;
+    private final SparkClosedLoopController turnController;
+    private final DutyCycleEncoder absoluteEncoder; // null = o DIO não pôde ser usado
+    private final int absoluteDio;
+    // Zero ao ligar (offset 0.0 em SwerveConstants): a roda está reta quando o código liga.
+    private final boolean zeroAtStartup;
+    private boolean zeroPending;
+    // Leitura do absoluto com a roda reta: a de SwerveConstants ou a achada no zero ao ligar.
+    private double absoluteOffsetRad;
+    private boolean absoluteReferenced;
+    private final SwerveConferenciaGiro check = new SwerveConferenciaGiro();
+
+    // #endregion
+
+    // #region 📡 ESTADO
+
+    private final String driveFirmware;
+    private final String turnFirmware;
+    // Motivo para o módulo não andar desde que ligou (firmware ou configuração); null = ok.
+    private final String startupProblem;
+    // DIO indisponível; null = ok.
+    private final String dioProblem;
+    private final boolean driveReady;
+    private final boolean turnReady;
+    private boolean driveConnected;
+    private boolean turnConnected;
+    // Primeiro erro de leitura deste ciclo (ex.: "kTimeout"); null = todas as leituras ok.
+    private String driveReadError;
+    private String turnReadError;
+    private String commandStatus = "OK";
+
+    // Giro: posição contínua do módulo pelo NEO 550 (rad), alinhada pelo absoluto.
+    private double motorAngleRad = Double.NaN;
+    private boolean aligned;
+    private String alignError;
+    private int settleCycles;
+    private int absoluteSignalCycles;
+    private int absoluteMissingCycles;
+    private int stillCycles;
+    private int resyncCycles;
+    private double lastMotorAngleRad = Double.NaN;
+    private double lastAbsoluteRawRad = Double.NaN;
+
+    private final FaultFilter driveFaults = new FaultFilter();
+    private final FaultFilter turnFaults = new FaultFilter();
+
+    // #endregion
+
+    // #endregion
+
+    // #region 🛠️ PARTE 2 - FUNÇÕES
+
+    // #region ⚙️ CONSTRUÇÃO E CONFIGURAÇÃO
+
+    /**
+     * Confere o firmware, configura e grava os dois Spark e abre o encoder absoluto no
+     * roboRIO. O 0° do giro é definido nos primeiros ciclos (updateInputs).
+     *
+     * @param absoluteDio porta DIO do fio branco (sinal absoluto) do Through Bore
+     * @param absoluteOffsetRad leitura do absoluto (anti-horária) com a roda reta para a
+     *     frente; 0 = zerar ao ligar (a roda está reta quando o código liga)
+     * @param driveInverted tração invertida (módulos espelhados da esquerda)
+     */
+    public SwerveIOSparkMax(String name, int driveId, int turnId, int absoluteDio, double absoluteOffsetRad,
+            boolean driveInverted) {
+        this.name = name;
+        this.absoluteDio = absoluteDio;
+        this.absoluteOffsetRad = absoluteOffsetRad;
+        driveMotor = new SparkMax(driveId, MotorType.kBrushless);
+        turnMotor = new SparkMax(turnId, MotorType.kBrushless);
+        driveEncoder = driveMotor.getEncoder();
+        turnEncoder = turnMotor.getEncoder();
+        driveController = driveMotor.getClosedLoopController();
+        turnController = turnMotor.getClosedLoopController();
+        // Leitura mais velha que MAX_SIGNAL_AGE_SECONDS: getLastError() acusa e o módulo para.
+        driveMotor.setPeriodicFrameTimeout((int) (MAX_SIGNAL_AGE_SECONDS * 1000));
+        turnMotor.setPeriodicFrameTimeout((int) (MAX_SIGNAL_AGE_SECONDS * 1000));
+        stop();
+
+        int driveVersion = driveMotor.getFirmwareVersion();
+        int turnVersion = turnMotor.getFirmwareVersion();
+        driveFirmware = firmwareText(driveVersion);
+        turnFirmware = firmwareText(turnVersion);
+        String driveFirmwareProblem = firmwareProblem(driveVersion);
+        String turnFirmwareProblem = firmwareProblem(turnVersion);
+        DriverStation.reportWarning("Swerve " + name + ": Spark MAX " + driveId + " (tração"
+            + (driveInverted ? ", invertida" : "") + ") firmware " + driveFirmware
+            + (driveFirmwareProblem == null ? " ok" : " ERRADO") + " | Spark MAX " + turnId + " (giro) firmware "
+            + turnFirmware + (turnFirmwareProblem == null ? " ok" : " ERRADO") + " | "
+            + (absoluteDio < 0 ? "sem encoder absoluto (desligado em SwerveConstants)"
+                : "encoder absoluto no DIO " + absoluteDio), false);
+        reportFirmwareProblem(driveMotor, "tração", driveFirmware, driveFirmwareProblem);
+        reportFirmwareProblem(turnMotor, "giro", turnFirmware, turnFirmwareProblem);
+
+        // Firmware errado: não grava nada no Spark (a configuração seria lida em outras unidades).
+        String driveConfigError = driveFirmwareProblem == null
+            ? applyConfiguration(driveMotor, driveConfiguration(driveInverted), "tração") : null;
+        String turnConfigError = turnFirmwareProblem == null
+            ? applyConfiguration(turnMotor, turnConfiguration(), "giro") : null;
+        startupProblem = driveFirmwareProblem != null ? "FIRMWARE_TRACAO (Spark " + driveId + ": " + driveFirmware + ")"
+            : turnFirmwareProblem != null ? "FIRMWARE_GIRO (Spark " + turnId + ": " + turnFirmware + ")"
+            : driveConfigError != null ? "FALHA_CONFIG_TRACAO (Spark " + driveId + ": " + driveConfigError + ")"
+            : turnConfigError != null ? "FALHA_CONFIG_GIRO (Spark " + turnId + ": " + turnConfigError + ")"
+            : null;
+        driveReady = driveFirmwareProblem == null && driveConfigError == null;
+        turnReady = turnFirmwareProblem == null && turnConfigError == null;
+        // Apaga as falhas guardadas de antes (ex.: o Sensor Fault da configuração antiga,
+        // com o absoluto no Spark): o que aparecer no REV Hardware Client depois é de agora.
+        if (driveReady) driveMotor.clearFaults();
+        if (turnReady) turnMotor.clearFaults();
+        // A odometria começa do 0.
+        if (driveReady) driveEncoder.setPosition(0.0);
+
+        DutyCycleEncoder encoder = null;
+        String dioProblem = null;
+        // DIO negativo (NO_ABSOLUTE_ENCODER): módulo sem absoluto, nem abre a porta.
+        if (absoluteDio >= 0) {
+            try {
+                encoder = new DutyCycleEncoder(absoluteDio, 2.0 * Math.PI, 0.0);
+                if (!TURN_ENCODER_IS_V2) {
+                    encoder.setDutyCycleRange(1.0 / V1_PERIOD_US, (V1_PERIOD_US - 1.0) / V1_PERIOD_US);
+                    encoder.setAssumedFrequency(V1_FREQUENCY_HZ);
+                }
+            } catch (RuntimeException e) {
+                dioProblem = "DIO_INDISPONIVEL (DIO " + absoluteDio + ": " + e.getMessage() + ")";
+                DriverStation.reportError("Swerve " + name + ": não deu para usar o DIO " + absoluteDio
+                    + " do encoder absoluto (" + e.getMessage() + ").", false);
+            }
+        }
+        absoluteEncoder = encoder;
+        this.dioProblem = dioProblem;
+        zeroAtStartup = absoluteOffsetRad == 0.0;
+        zeroPending = zeroAtStartup;
+        absoluteReferenced = !zeroAtStartup;
+    }
+
+    /**
+     * 🛑 A REVLib lança exceção quando o Spark recusa um parâmetro (ex.: firmware
+     * antigo para a REVLib 2026). Sem este try, o programa inteiro caía ao ligar,
+     * junto com o pivô e o manipulador. Assim só este módulo fica parado.
+     *
+     * @return null se o Spark aceitou; senão, o motivo (erro da REVLib)
+     */
+    private String applyConfiguration(SparkMax motor, SparkMaxConfig config, String part) {
+        String reason;
+        try {
+            // Reset dos parâmetros seguros: começa de um estado conhecido (apaga a
+            // configuração antiga do encoder absoluto no Spark) e preserva o CAN ID.
+            // Persist: grava na memória do Spark.
+            REVLibError result = motor.configure(config, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+            if (result == REVLibError.kOk) return null;
+            reason = result.name();
+        } catch (RuntimeException e) {
+            reason = e.getMessage();
+        }
+        DriverStation.reportError("Swerve " + name + ": Spark MAX " + motor.getDeviceId() + " (" + part
+            + ") recusou a configuração (" + reason + "). Confira o ID e o firmware do Spark ("
+            + SPARK_FIRMWARE_RECOMMENDED + ") no REV Hardware Client 2. Este módulo fica parado.", false);
+        return reason;
+    }
+
+    private void reportFirmwareProblem(SparkMax motor, String part, String version, String problem) {
+        if (problem == null) return;
+        DriverStation.reportError("Swerve " + name + ": Spark MAX " + motor.getDeviceId() + " (" + part
+            + ") com firmware " + version + ", que " + problem + " (REV Hardware Client 2 > Spark > Update)."
+            + " Este módulo fica parado até corrigir.", false);
+    }
+
+    /** Tração: NEO 1.0, velocidade em m/s da roda com PID + feedforward no Spark. */
+    static SparkMaxConfig driveConfiguration(boolean inverted) {
+        var config = new SparkMaxConfig();
+        config.inverted(inverted).idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(DRIVE_CURRENT_LIMIT_AMPS).voltageCompensation(NOMINAL_VOLTS);
+        config.encoder.positionConversionFactor(DRIVE_POSITION_FACTOR)
+            .velocityConversionFactor(DRIVE_VELOCITY_FACTOR)
+            .uvwMeasurementPeriod(DRIVE_ENCODER_MEASUREMENT_PERIOD_MS)
+            .uvwAverageDepth(DRIVE_ENCODER_AVERAGE_DEPTH);
+        config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(DRIVE_KP, DRIVE_KI, DRIVE_KD).outputRange(-1.0, 1.0);
+        config.closedLoop.feedForward.kS(DRIVE_KS).kV(DRIVE_KV);
+        config.signals.primaryEncoderPositionPeriodMs(20).primaryEncoderPositionAlwaysOn(true)
+            .primaryEncoderVelocityPeriodMs(20).primaryEncoderVelocityAlwaysOn(true)
+            .appliedOutputPeriodMs(20).busVoltagePeriodMs(20).outputCurrentPeriodMs(20)
+            .faultsPeriodMs(20).warningsPeriodMs(20);
+        return config;
+    }
+
+    /**
+     * Giro: NEO 550, posição do módulo (rad) pelo encoder do próprio motor, com a redução
+     * de 46,42:1. Sem position wrapping: a posição é contínua e o código manda o alvo
+     * pelo caminho mais curto. Sem encoder absoluto no Spark (ele está no roboRIO).
+     */
+    static SparkMaxConfig turnConfiguration() {
+        var config = new SparkMaxConfig();
+        config.inverted(TURN_INVERTED).idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(TURN_CURRENT_LIMIT_AMPS).voltageCompensation(NOMINAL_VOLTS);
+        config.encoder.positionConversionFactor(TURN_MOTOR_POSITION_FACTOR)
+            .velocityConversionFactor(TURN_MOTOR_VELOCITY_FACTOR)
+            .uvwMeasurementPeriod(DRIVE_ENCODER_MEASUREMENT_PERIOD_MS)
+            .uvwAverageDepth(DRIVE_ENCODER_AVERAGE_DEPTH);
+        config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(TURN_KP, TURN_KI, TURN_KD).outputRange(-1.0, 1.0);
+        config.signals.primaryEncoderPositionPeriodMs(20).primaryEncoderPositionAlwaysOn(true)
+            .primaryEncoderVelocityPeriodMs(20).primaryEncoderVelocityAlwaysOn(true)
+            .appliedOutputPeriodMs(20).busVoltagePeriodMs(20).outputCurrentPeriodMs(20)
+            .faultsPeriodMs(20).warningsPeriodMs(20);
+        return config;
+    }
+
+    // #endregion
+
+    // #region 🛠️ AUXILIARES
+
+    /** "26.1.6" a partir do número da REVLib (maior.menor.build em 8/8/16 bits); 0 = desconhecido. */
+    static String firmwareText(int version) {
+        if (version == 0) return "desconhecido";
+        return ((version >>> 24) & 0xFF) + "." + ((version >>> 16) & 0xFF) + "." + (version & 0xFFFF);
+    }
+
+    /**
+     * null = pode usar: firmware 26.x (o da REVLib 2026) ou não informado (as leituras
+     * dizem se o Spark responde). Senão, o motivo para não usar.
+     */
+    static String firmwareProblem(int version) {
+        if (version == 0) return null;
+        int major = (version >>> 24) & 0xFF;
+        if (major == SPARK_FIRMWARE_MAJOR) return null;
+        return major > SPARK_FIRMWARE_MAJOR
+            ? "é de outra temporada e não usa os fatores de conversão (m/s e radianos viram RPM e voltas)."
+                + " Instalar a " + SPARK_FIRMWARE_RECOMMENDED
+            : "é antigo para a REVLib 2026. Atualizar para a " + SPARK_FIRMWARE_RECOMMENDED;
+    }
+
+    /** Nomes das falhas ativas do Spark (vazio = nenhuma). */
+    static String faultNames(Faults faults) {
+        var names = new StringBuilder();
+        if (faults.other) names.append(" other");
+        if (faults.motorType) names.append(" motorType");
+        if (faults.sensor) names.append(" sensor");
+        if (faults.can) names.append(" can");
+        if (faults.temperature) names.append(" temperature");
+        if (faults.gateDriver) names.append(" gateDriver");
+        if (faults.escEeprom) names.append(" escEeprom");
+        if (faults.firmware) names.append(" firmware");
+        return names.toString().trim();
+    }
+
+    /** Ângulo de 0 a 2π (sem o 2π, para mostrar 0° a 359,9°). */
+    static double wrapPositive(double angleRad) {
+        double wrapped = angleRad % (2.0 * Math.PI);
+        if (wrapped < 0.0) wrapped += 2.0 * Math.PI;
+        return wrapped >= 2.0 * Math.PI ? 0.0 : wrapped;
+    }
+
+    /** Leitura do absoluto (como o sensor manda) no sentido anti-horário visto de cima, de 0 a 2π. */
+    static double counterClockwise(double sensorRad, boolean inverted) {
+        return wrapPositive(inverted ? -sensorRad : sensorRad);
+    }
+
+    /** Ângulo do módulo no chassi (−π a π): leitura anti-horária menos a leitura com a roda reta. */
+    static double absoluteAngle(double counterClockwiseRad, double offsetRad) {
+        return MathUtil.angleModulus(counterClockwiseRad - offsetRad);
+    }
+
+    /** Linha pronta para SwerveConstants.java com a leitura atual (graus, ponto decimal). */
+    static String offsetLine(String moduleName, double counterClockwiseRad) {
+        return String.format(Locale.ROOT, "public static final double %s_ABSOLUTE_OFFSET_DEG = %.2f;",
+            moduleName, Math.toDegrees(wrapPositive(counterClockwiseRad)));
+    }
+
+    /** Lê um valor da tração e guarda o primeiro erro do ciclo (CAN, tempo ou NaN). */
+    private double readDrive(DoubleSupplier read) {
+        double value = read.getAsDouble();
+        REVLibError error = driveMotor.getLastError();
+        if (driveReadError == null && error != REVLibError.kOk) driveReadError = error.name();
+        if (driveReadError == null && !Double.isFinite(value)) driveReadError = "NaN";
+        return value;
+    }
+
+    private double readTurn(DoubleSupplier read) {
+        double value = read.getAsDouble();
+        REVLibError error = turnMotor.getLastError();
+        if (turnReadError == null && error != REVLibError.kOk) turnReadError = error.name();
+        if (turnReadError == null && !Double.isFinite(value)) turnReadError = "NaN";
+        return value;
+    }
+
+    /** Falhas ativas; null = leitura inválida neste ciclo (não conta para o aviso). */
+    private static String readFaults(SparkMax motor, boolean readsOk) {
+        if (!readsOk) return null;
+        Faults faults = motor.getFaults();
+        return motor.getLastError() == REVLibError.kOk ? faultNames(faults) : null;
+    }
+
+    /** Falha ativa só vira aviso se aparecer igual em FAULT_DEBOUNCE_CYCLES leituras válidas. */
+    private static final class FaultFilter {
+        private String candidate = "";
+        private int count;
+        private String reported = "";
+
+        void update(String names) {
+            if (names == null) return;
+            if (names.equals(candidate)) {
+                count++;
+            } else {
+                candidate = names;
+                count = 1;
+            }
+            if (count >= FAULT_DEBOUNCE_CYCLES) reported = candidate;
+        }
+
+        String reported() {
+            return reported;
+        }
+    }
+
+    // #endregion
+
+    // #endregion
+
+    // #region 🔁 PARTE 3 - LÓGICA
+
+    // #region 🎮 COMANDOS (O SWERVEMODULO CHAMA)
+
+    /** Giro com 0° definido, assentado e conferido: o módulo pode andar. */
+    private boolean turnUsable() {
+        return turnReady && turnConnected && aligned && settleCycles == 0 && alignError == null
+            && check.problem() == null && turnBlockingFault() == null && Double.isFinite(motorAngleRad);
+    }
+
+    /**
+     * Falha ATIVA do Spark do giro (repetida por 0,1 s) que impede o NEO 550 de girar o
+     * módulo: sem o sensor do motor o Spark não comuta o NEO 550 (19/11/2026: TE com
+     * "giro (Spark 18): sensor", o giro não andava e a tração seguia empurrando a roda
+     * para um lado qualquer). Com ela o módulo inteiro para; null = nenhuma.
+     */
+    private String turnBlockingFault() {
+        String faults = " " + turnFaults.reported() + " ";
+        for (String fatal : new String[] {"sensor", "gateDriver", "motorType"}) {
+            if (faults.contains(" " + fatal + " ")) return fatal;
+        }
+        return null;
+    }
+
+    /**
+     * Ângulo no referencial do chassi (0 = roda para a frente). Sem giro confiável a roda
+     * não pode tracionar (andaria para um lado qualquer): para o módulo inteiro.
+     */
+    @Override
+    public void setDesiredState(double speedMetersPerSec, double angleRad) {
+        if (DriverStation.isDisabled() || !turnUsable()
+                || !Double.isFinite(speedMetersPerSec) || !Double.isFinite(angleRad)) {
+            stop();
+            return;
+        }
+        // Alvo perto da posição atual do NEO 550: o caminho mais curto até o ângulo pedido.
+        double setpoint = motorAngleRad + MathUtil.angleModulus(angleRad - motorAngleRad);
+        REVLibError turnResult = turnController.setSetpoint(setpoint, ControlType.kPosition);
+        if (turnResult != REVLibError.kOk) {
+            // O giro não recebeu o ângulo: a roda não traciona neste ciclo.
+            driveMotor.stopMotor();
+            commandStatus = "FALHA_COMANDO_GIRO (Spark " + turnMotor.getDeviceId() + ": " + turnResult.name() + ")";
+            return;
+        }
+        if (driveReady && driveConnected) {
+            REVLibError driveResult = driveController.setSetpoint(speedMetersPerSec, ControlType.kVelocity);
+            commandStatus = driveResult == REVLibError.kOk ? "OK"
+                : "FALHA_COMANDO_TRACAO (Spark " + driveMotor.getDeviceId() + ": " + driveResult.name() + ")";
+        } else {
+            driveMotor.stopMotor();
+            commandStatus = "OK";
+        }
+    }
+
+    @Override
+    public void stop() {
+        driveMotor.stopMotor();
+        turnMotor.stopMotor();
+    }
+
+    // #endregion
+
+    // #region 🧭 GIRO - ALINHAMENTO PELO ENCODER ABSOLUTO
+
+    /** Parado? Zera/alinha ao ligar, realinha se afastou e confere o sentido. */
+    private void updateTurnAlignment(double absoluteRaw, boolean absoluteValid) {
+        if (settleCycles > 0) settleCycles--;
+        boolean smallSteps = turnConnected && Double.isFinite(lastMotorAngleRad)
+            && Math.abs(motorAngleRad - lastMotorAngleRad) < STILL_STEP_RAD
+            && (!Double.isFinite(absoluteRaw) || !Double.isFinite(lastAbsoluteRawRad)
+                || Math.abs(MathUtil.angleModulus(absoluteRaw - lastAbsoluteRawRad)) < STILL_STEP_RAD);
+        stillCycles = smallSteps ? stillCycles + 1 : 0;
+        boolean still = stillCycles >= STILL_CYCLES;
+        lastMotorAngleRad = turnConnected ? motorAngleRad : Double.NaN;
+        lastAbsoluteRawRad = absoluteRaw;
+
+        if (!turnReady || !turnConnected) return;
+        if (still && settleCycles == 0) {
+            if (zeroPending) {
+                if (absoluteValid || absoluteEncoder == null || absoluteMissingCycles >= ZERO_ABSOLUTE_WAIT_CYCLES) {
+                    zeroStraightWheel(absoluteRaw, absoluteValid);
+                }
+                return;
+            }
+            if (!aligned) {
+                // Offset escrito em SwerveConstants: o 0° vem do absoluto.
+                if (absoluteValid && absoluteReferenced) {
+                    align(absoluteAngle(absoluteRaw, absoluteOffsetRad), Double.NaN);
+                } else if (absoluteMissingCycles >= ABSOLUTE_MISSING_CYCLES) {
+                    // 1 s sem o absoluto ao ligar: em vez de deixar o módulo parado o jogo
+                    // inteiro, zera como no zero ao ligar (a equipe liga com as rodas retas).
+                    // O offset de SwerveConstants continua guardado: quando o sinal aparecer,
+                    // o realinhamento (abaixo) corrige a diferença.
+                    zeroStraightWheel(Double.NaN, false);
+                }
+                return;
+            }
+            if (absoluteValid && !absoluteReferenced) {
+                // Zerado ao ligar sem o absoluto: o offset sai da posição atual do NEO 550.
+                absoluteOffsetRad = wrapPositive(absoluteRaw - motorAngleRad);
+                absoluteReferenced = true;
+                check.restartWindow();
+            }
+            if (absoluteValid) {
+                double absoluteAngle = absoluteAngle(absoluteRaw, absoluteOffsetRad);
+                double difference = MathUtil.angleModulus(motorAngleRad - absoluteAngle);
+                double tolerance = Math.toRadians(DriverStation.isDisabled()
+                    ? TURN_RESYNC_DISABLED_DEGREES : TURN_RESYNC_ENABLED_DEGREES);
+                resyncCycles = Math.abs(difference) > tolerance ? resyncCycles + 1 : 0;
+                if (resyncCycles >= RESYNC_CYCLES) {
+                    align(absoluteAngle, difference);
+                    return;
+                }
+            }
+        } else if (!still) {
+            resyncCycles = 0;
+        }
+        if (aligned && settleCycles == 0 && absoluteReferenced) {
+            check.update(motorAngleRad, absoluteRaw, absoluteValid, stillCycles >= CHECK_STILL_CYCLES);
+        }
+    }
+
+    /**
+     * Zero ao ligar: a roda está reta para a frente, então o NEO 550 vai para 0° e a
+     * leitura do absoluto agora vira o offset dele (sem o absoluto, só o NEO 550).
+     */
+    private void zeroStraightWheel(double absoluteRaw, boolean absoluteValid) {
+        stop();
+        REVLibError result = turnEncoder.setPosition(0.0);
+        if (result != REVLibError.kOk) {
+            alignError = "FALHA_ZERAR_GIRO (Spark " + turnMotor.getDeviceId() + ": " + result.name() + ")";
+            return;
+        }
+        alignError = null;
+        zeroPending = false;
+        aligned = true;
+        settleCycles = SETTLE_CYCLES;
+        resyncCycles = 0;
+        stillCycles = 0;
+        lastMotorAngleRad = Double.NaN;
+        check.restartWindow();
+        String detail;
+        if (zeroAtStartup) {
+            absoluteReferenced = absoluteValid;
+            if (absoluteValid) absoluteOffsetRad = absoluteRaw;
+            detail = absoluteValid
+                ? String.format(Locale.ROOT, " (encoder absoluto %.2f°, DIO %d)", Math.toDegrees(absoluteRaw), absoluteDio)
+                : absoluteDio < 0 ? " (módulo sem encoder absoluto: só pelo NEO 550)"
+                : " (sem o encoder absoluto no DIO " + absoluteDio + ": só pelo NEO 550)";
+        } else {
+            // Offset fixo de SwerveConstants, mas o absoluto não respondeu ao ligar.
+            detail = " (offset fixo, mas SEM SINAL do encoder absoluto no DIO " + absoluteDio
+                + ": só pelo NEO 550 até o sinal voltar; rodas tortas ao ligar = alinhar e reiniciar o código)";
+        }
+        DriverStation.reportWarning("Swerve " + name + ": zerado com a roda reta ao ligar" + detail, false);
+    }
+
+    /** A posição do NEO 550 passa a ser o ângulo do absoluto (motores parados enquanto muda). */
+    private void align(double absoluteAngle, double difference) {
+        stop();
+        REVLibError result = turnEncoder.setPosition(absoluteAngle);
+        if (result != REVLibError.kOk) {
+            alignError = "FALHA_ALINHAR_GIRO (Spark " + turnMotor.getDeviceId() + ": " + result.name() + ")";
+            return;
+        }
+        if (aligned && DriverStation.isEnabled()) {
+            DriverStation.reportWarning(String.format(Locale.ROOT,
+                "Swerve %s: giro realinhado pelo encoder absoluto (diferença de %.1f°)", name,
+                Math.toDegrees(difference)), false);
+        }
+        alignError = null;
+        aligned = true;
+        settleCycles = SETTLE_CYCLES;
+        resyncCycles = 0;
+        stillCycles = 0;
+        lastMotorAngleRad = Double.NaN;
+        check.restartWindow();
+    }
+
+    // #endregion
+
+    // #region 📡 LEITURAS
+
+    @Override
+    public void updateInputs(SwerveIOInputs inputs) {
+        driveReadError = null;
+        inputs.drivePositionMeters = readDrive(driveEncoder::getPosition);
+        inputs.driveVelocityMetersPerSec = readDrive(driveEncoder::getVelocity);
+        double driveOutput = readDrive(driveMotor::getAppliedOutput);
+        inputs.driveAppliedVolts = driveOutput * readDrive(driveMotor::getBusVoltage);
+        inputs.driveCurrentAmps = readDrive(driveMotor::getOutputCurrent);
+        driveConnected = driveReadError == null;
+        driveFaults.update(readFaults(driveMotor, driveConnected));
+
+        turnReadError = null;
+        motorAngleRad = readTurn(turnEncoder::getPosition);
+        inputs.turnVelocityRadPerSec = readTurn(turnEncoder::getVelocity);
+        double turnOutput = readTurn(turnMotor::getAppliedOutput);
+        inputs.turnAppliedVolts = turnOutput * readTurn(turnMotor::getBusVoltage);
+        inputs.turnCurrentAmps = readTurn(turnMotor::getOutputCurrent);
+        turnConnected = turnReadError == null;
+        turnFaults.update(readFaults(turnMotor, turnConnected));
+
+        boolean absoluteConnected = absoluteEncoder != null && absoluteEncoder.isConnected();
+        absoluteSignalCycles = absoluteConnected ? absoluteSignalCycles + 1 : 0;
+        absoluteMissingCycles = absoluteConnected ? 0 : absoluteMissingCycles + 1;
+        double absoluteRaw = absoluteConnected
+            ? counterClockwise(absoluteEncoder.get(), TURN_ENCODER_INVERTED) : Double.NaN;
+        updateTurnAlignment(absoluteRaw, absoluteSignalCycles >= ABSOLUTE_SIGNAL_CYCLES);
+        boolean absoluteKnown = absoluteConnected && absoluteReferenced;
+        double absoluteAngle = absoluteKnown ? absoluteAngle(absoluteRaw, absoluteOffsetRad) : Double.NaN;
+
+        boolean turnTrusted = turnReady && turnConnected && aligned && settleCycles == 0;
+        inputs.turnPositionRad = turnTrusted ? MathUtil.angleModulus(motorAngleRad)
+            : absoluteKnown ? absoluteAngle : 0.0;
+        inputs.absoluteConnected = absoluteConnected;
+        inputs.absoluteRawRad = absoluteConnected ? absoluteRaw : 0.0;
+        inputs.absoluteAngleRad = absoluteKnown ? absoluteAngle : 0.0;
+        inputs.absoluteOffsetRad = absoluteReferenced ? absoluteOffsetRad : Double.NaN;
+        inputs.absoluteFrequencyHz = absoluteEncoder != null ? absoluteEncoder.getFrequency() : 0;
+        inputs.turnCheckRatio = check.lastRatio();
+        inputs.driveConnected = driveReady && driveConnected;
+        inputs.turnConnected = turnUsable();
+        inputs.driveFirmware = driveFirmware;
+        inputs.turnFirmware = turnFirmware;
+        inputs.activeFaults = warnings();
+        inputs.configurationStatus = status();
+        // Sem giro confiável a roda não pode tracionar. Desabilitado, quem para é o Swerve.
+        if (!inputs.turnConnected) stop();
+    }
+
+    /** Avisos que não param o módulo: falhas ativas dos Spark e absoluto sem sinal. */
+    private String warnings() {
+        var text = new StringBuilder();
+        appendWarning(text, "tração (Spark " + driveMotor.getDeviceId() + "): ", driveFaults.reported());
+        appendWarning(text, "giro (Spark " + turnMotor.getDeviceId() + "): ", turnFaults.reported());
+        if (check.warning() != null) {
+            appendWarning(text, "giro (DIO " + absoluteDio + "): ", String.format(Locale.ROOT,
+                "%s (absoluto/NEO 550 = %.2f), continua pelo NEO 550 e realinha parado", check.warning(),
+                check.lastRatio()));
+        }
+        if (aligned && absoluteDio < 0) {
+            appendWarning(text, "encoder absoluto: ", "desligado em SwerveConstants, girando só pelo NEO 550");
+        } else if (aligned && (absoluteEncoder == null || absoluteMissingCycles >= ABSOLUTE_LOST_CYCLES)) {
+            appendWarning(text, "encoder absoluto (DIO " + absoluteDio + "): ", absoluteEncoder == null
+                ? "DIO indisponível, girando só pelo NEO 550" : "sem sinal, girando só pelo NEO 550");
+        }
+        return text.toString();
+    }
+
+    private static void appendWarning(StringBuilder text, String prefix, String warning) {
+        if (warning.isEmpty()) return;
+        if (text.length() > 0) text.append("; ");
+        text.append(prefix).append(warning);
+    }
+
+    /** Motivo de o módulo não andar (o primeiro que vale), ou o resultado do último comando. */
+    private String status() {
+        if (startupProblem != null) return startupProblem;
+        if (!driveConnected) return "SEM_LEITURA_TRACAO (Spark " + driveMotor.getDeviceId() + ": " + driveReadError + ")";
+        if (!turnConnected) return "SEM_LEITURA_GIRO (Spark " + turnMotor.getDeviceId() + ": " + turnReadError + ")";
+        if (alignError != null) return alignError;
+        if (!aligned) {
+            // Espera o módulo ficar parado para zerar (dura ~0,1 s ao ligar).
+            if (zeroPending) return "ZERANDO_RODA_RETA";
+            if (absoluteEncoder == null) {
+                return dioProblem != null ? dioProblem : "AGUARDANDO_ENCODER_ABSOLUTO (módulo sem absoluto)";
+            }
+            return absoluteMissingCycles >= ABSOLUTE_MISSING_CYCLES
+                ? "SEM_ENCODER_ABSOLUTO (DIO " + absoluteDio + ": conferir branco no pino S, vermelho no meio e preto na borda)"
+                : "AGUARDANDO_ENCODER_ABSOLUTO (DIO " + absoluteDio + ")";
+        }
+        if (settleCycles > 0) return "ALINHANDO_GIRO";
+        String blocking = turnBlockingFault();
+        if (blocking != null) {
+            String id = "Spark " + turnMotor.getDeviceId();
+            return switch (blocking) {
+                case "sensor" -> "FALHA_SENSOR_GIRO (" + id + " não lê o sensor do NEO 550: conferir o cabo fino"
+                    + " do encoder nas duas pontas e os 3 fios do motor)";
+                case "gateDriver" -> "FALHA_DRIVER_GIRO (" + id + ": falha interna do Spark; trocar o Spark)";
+                default -> "FALHA_TIPO_MOTOR_GIRO (" + id + ": o Spark não reconhece o NEO 550 como brushless)";
+            };
+        }
+        if (check.problem() != null) {
+            return String.format(Locale.ROOT, "%s (DIO %d, absoluto/NEO 550 = %.2f)", check.problem(),
+                absoluteDio, check.lastRatio());
+        }
+        return commandStatus;
+    }
+
+    // #endregion
+
+    // #region 🧹 ENCERRAMENTO
+
+    @Override
+    public void close() {
+        stop();
+        driveMotor.close();
+        turnMotor.close();
+        if (absoluteEncoder != null) absoluteEncoder.close();
+    }
+
+    // #endregion
+
+    // #endregion
+}

@@ -1,0 +1,86 @@
+package frc.robot.subsystems.swerve;
+
+// #region 📚 IMPORTS
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+// #endregion
+
+/**
+ * 📊 Swerve no AdvantageScope e na janela da simulação (NetworkTables, em
+ * SmartDashboard/Swerve). Tudo também vai para o .wpilog do DataLogManager.
+ *
+ * - Pose (Pose2d): campo 2D/3D do AdvantageScope.
+ * - EstadosMedidos e EstadosAlvo (SwerveModuleState[], ordem FE, FD, TE, TD):
+ *   aba Swerve do AdvantageScope.
+ * - Rotacao (Rotation2d) e VelocidadesChassi (ChassisSpeeds, referencial do robô).
+ * - Campo (Field2d): robô no campo da janela Robot Simulation e do Glass.
+ */
+public final class SwerveVisualizer implements AutoCloseable {
+
+    // #region 📦 PARTE 1 - VARIÁVEIS E CONFIGURAÇÃO
+
+    private final StructPublisher<Pose2d> posePublisher;
+    private final StructArrayPublisher<SwerveModuleState> measuredPublisher;
+    private final StructArrayPublisher<SwerveModuleState> desiredPublisher;
+    private final StructPublisher<Rotation2d> rotationPublisher;
+    private final StructPublisher<ChassisSpeeds> speedsPublisher;
+    private final Field2d field = new Field2d();
+
+    // #endregion
+
+    // #region 🛠️ PARTE 2 - FUNÇÕES
+
+    // #region ⚙️ CONSTRUÇÃO
+
+    SwerveVisualizer() {
+        var table = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("Swerve");
+        posePublisher = table.getStructTopic("Pose", Pose2d.struct).publish();
+        measuredPublisher = table.getStructArrayTopic("EstadosMedidos", SwerveModuleState.struct).publish();
+        desiredPublisher = table.getStructArrayTopic("EstadosAlvo", SwerveModuleState.struct).publish();
+        rotationPublisher = table.getStructTopic("Rotacao", Rotation2d.struct).publish();
+        speedsPublisher = table.getStructTopic("VelocidadesChassi", ChassisSpeeds.struct).publish();
+        SmartDashboard.putData("Swerve/Campo", field);
+    }
+
+    @Override
+    public void close() {
+        posePublisher.close();
+        measuredPublisher.close();
+        desiredPublisher.close();
+        rotationPublisher.close();
+        speedsPublisher.close();
+        field.close();
+    }
+
+    // #endregion
+
+    // #endregion
+
+    // #region 🔁 PARTE 3 - LÓGICA
+
+    // #region 📊 TELEMETRIA
+
+    /** Publica pose, estados dos módulos (medidos e pedidos) e velocidades do chassi. */
+    public void update(Pose2d pose, SwerveModuleState[] measured, SwerveModuleState[] desired,
+            ChassisSpeeds robotRelativeSpeeds) {
+        posePublisher.set(pose);
+        measuredPublisher.set(measured);
+        desiredPublisher.set(desired);
+        rotationPublisher.set(pose.getRotation());
+        speedsPublisher.set(robotRelativeSpeeds);
+        field.setRobotPose(pose);
+    }
+
+    // #endregion
+
+    // #endregion
+}

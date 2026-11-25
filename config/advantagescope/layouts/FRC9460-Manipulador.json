@@ -1,0 +1,413 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 832,
+      "state": {
+        "sidebar": {
+          "width": 300,
+          "expanded": [
+            "NT:/SmartDashboard",
+            "NT:/SmartDashboard/Manipulador"
+          ]
+        },
+        "tabs": {
+          "selected": 1,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "24686652862241aca50c51ad7cb0ca15",
+              "renderer": "",
+              "controlsHeight": 0
+            },
+            {
+              "type": 3,
+              "title": "Manipulador 3D",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/SmartDashboard/Manipulador/BasePose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "FRC9460 - Manipulador"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Componentes",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {}
+                  }
+                ],
+                "game": "FRC:Axes"
+              },
+              "controllerUUID": "91ae15f36a8249629f8c6ff48fb30814",
+              "renderer": {
+                "cameraIndex": -2,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  0.75,
+                  0.85,
+                  0.75
+                ],
+                "cameraTarget": [
+                  0.05,
+                  0.4,
+                  0.0
+                ]
+              },
+              "controlsHeight": 180
+            },
+            {
+              "type": 1,
+              "title": "Teste - etapas",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/AnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#33bbff",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/FechamentoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#44dd88",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Teste/Etapa",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffcc44"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Teste/Resultado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#44dd88"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Comando",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0c0c0"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "b36228a81b2d44468900027225a964fb",
+              "renderer": null,
+              "controlsHeight": 235
+            },
+            {
+              "type": 1,
+              "title": "Garra - fechamento e corrente",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/MetaGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffcc44",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/ReferenciaGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b88aff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/FechamentoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#44dd88",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/Inputs/CurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff6666",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/LarguraObjetoCm",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/TemObjeto",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff6666"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "8676b3db740f4847aac9460eebde80be",
+              "renderer": null,
+              "controlsHeight": 235
+            },
+            {
+              "type": 1,
+              "title": "Rodas - RPM e corrente",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Rodas/AlvoRpm",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffcc44",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Rodas/Rpm",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Rodas/Inputs/CurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff6666",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Rodas/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0c0c0"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Garra/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "f471ca1e89de4c86a5f074ce80ea355a",
+              "renderer": null,
+              "controlsHeight": 235
+            },
+            {
+              "type": 1,
+              "title": "Rotacao - meta e angulo",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/MetaGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ffcc44",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/ReferenciaGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b88aff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/AnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#33bbff",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/Inputs/CurrentAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff6666",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/NaMeta",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#44dd88"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Manipulador/Giro/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0c0c0"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "023a84e0be1d4a348e4d4252f98ac646",
+              "renderer": null,
+              "controlsHeight": 235
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "26.0.0"
+}

@@ -1,0 +1,1607 @@
+{
+  "version": 1.0,
+  "grid_size": 96,
+  "tabs": [
+    {
+      "name": "Odometria",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Campo: odometria (amarelo = rastro dos últimos 15 s)",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 672.0,
+            "height": 384.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Campo",
+              "period": 0.06,
+              "field_game": "Rebuilt",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4278238420,
+              "trajectory_color": 4294234175,
+              "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "Rodas (medido)",
+            "x": 672.0,
+            "y": 0.0,
+            "width": 288.0,
+            "height": 288.0,
+            "type": "SwerveDrive",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Modulos",
+              "period": 0.06,
+              "show_robot_rotation": true,
+              "rotation_unit": "Radians"
+            }
+          },
+          {
+            "title": "Pilotagem (Y)",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Pilotagem",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "X (m)",
+            "x": 960.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/PoseXMetros",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Y (m)",
+            "x": 960.0,
+            "y": 192.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/PoseYMetros",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Frente (graus)",
+            "x": 960.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FrenteGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Velocidade (m/s)",
+            "x": 672.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/VelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro (graus/s)",
+            "x": 864.0,
+            "y": 288.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/GiroGrausPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Pigeon",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Giroscopio/Conectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Estado do swerve",
+            "x": 192.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Estado",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Comando",
+            "x": 384.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Comando",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Velocidade (BACK)",
+            "x": 576.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Velocidade",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Bateria (V)",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Robo/BateriaVolts",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Zerar frente",
+            "x": 960.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/ZerarFrente",
+              "period": 0.06,
+              "show_type": false
+            }
+          },
+          {
+            "title": "Falha (vazio = NENHUMA)",
+            "x": 0.0,
+            "y": 480.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Falha",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Velocidade (m/s)",
+            "x": 0.0,
+            "y": 576.0,
+            "width": 384.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/VelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4278238420,
+              "line_width": 2.0,
+              "min_value": 0.0,
+              "max_value": 4.8
+            }
+          },
+          {
+            "title": "Frente do robô (graus)",
+            "x": 384.0,
+            "y": 576.0,
+            "width": 384.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FrenteGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4281034402,
+              "line_width": 2.0,
+              "min_value": -180.0,
+              "max_value": 180.0
+            }
+          },
+          {
+            "title": "Giro do robô (graus/s)",
+            "x": 768.0,
+            "y": 576.0,
+            "width": 384.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/GiroGrausPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4290018274,
+              "line_width": 2.0,
+              "min_value": -400.0,
+              "max_value": 400.0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Módulos",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "FE (frente esquerda)",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Configuracao",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "OK",
+            "x": 0.0,
+            "y": 96.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Conectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Absoluto",
+            "x": 96.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "FE: ângulo medido (graus)",
+            "x": 0.0,
+            "y": 192.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4278238420,
+              "line_width": 2.0,
+              "min_value": -180.0,
+              "max_value": 180.0
+            }
+          },
+          {
+            "title": "Alvo (graus)",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/AlvoAnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FE: velocidade (m/s)",
+            "x": 0.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/VelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4278238420,
+              "line_width": 2.0,
+              "min_value": -4.8,
+              "max_value": 4.8
+            }
+          },
+          {
+            "title": "Tração (A)",
+            "x": 0.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Tracao/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro (A)",
+            "x": 96.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Giro/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Alvo (m/s)",
+            "x": 192.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/AlvoVelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FD (frente direita)",
+            "x": 288.0,
+            "y": 0.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Configuracao",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "OK",
+            "x": 288.0,
+            "y": 96.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Conectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Absoluto",
+            "x": 384.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "FD: ângulo medido (graus)",
+            "x": 288.0,
+            "y": 192.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4293167922,
+              "line_width": 2.0,
+              "min_value": -180.0,
+              "max_value": 180.0
+            }
+          },
+          {
+            "title": "Alvo (graus)",
+            "x": 288.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/AlvoAnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FD: velocidade (m/s)",
+            "x": 288.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/VelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4293167922,
+              "line_width": 2.0,
+              "min_value": -4.8,
+              "max_value": 4.8
+            }
+          },
+          {
+            "title": "Tração (A)",
+            "x": 288.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Tracao/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro (A)",
+            "x": 384.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Giro/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Alvo (m/s)",
+            "x": 480.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/AlvoVelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TE (trás esquerda)",
+            "x": 576.0,
+            "y": 0.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Configuracao",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "OK",
+            "x": 576.0,
+            "y": 96.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Conectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Absoluto",
+            "x": 672.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "TE: ângulo medido (graus)",
+            "x": 576.0,
+            "y": 192.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4282091354,
+              "line_width": 2.0,
+              "min_value": -180.0,
+              "max_value": 180.0
+            }
+          },
+          {
+            "title": "Alvo (graus)",
+            "x": 576.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/AlvoAnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TE: velocidade (m/s)",
+            "x": 576.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/VelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4282091354,
+              "line_width": 2.0,
+              "min_value": -4.8,
+              "max_value": 4.8
+            }
+          },
+          {
+            "title": "Tração (A)",
+            "x": 576.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Tracao/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro (A)",
+            "x": 672.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Giro/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Alvo (m/s)",
+            "x": 768.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/AlvoVelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TD (trás direita)",
+            "x": 864.0,
+            "y": 0.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Configuracao",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "OK",
+            "x": 864.0,
+            "y": 96.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Conectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Absoluto",
+            "x": 960.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "TD: ângulo medido (graus)",
+            "x": 864.0,
+            "y": 192.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4290018274,
+              "line_width": 2.0,
+              "min_value": -180.0,
+              "max_value": 180.0
+            }
+          },
+          {
+            "title": "Alvo (graus)",
+            "x": 864.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/AlvoAnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TD: velocidade (m/s)",
+            "x": 864.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/VelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 10.0,
+              "color": 4290018274,
+              "line_width": 2.0,
+              "min_value": -4.8,
+              "max_value": 4.8
+            }
+          },
+          {
+            "title": "Tração (A)",
+            "x": 864.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Tracao/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro (A)",
+            "x": 960.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Giro/CorrenteAmps",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Alvo (m/s)",
+            "x": 1056.0,
+            "y": 672.0,
+            "width": 96.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/AlvoVelocidadeMetrosPorSeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Calibração",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Encoders repetidos (2 DIOs no mesmo sinal)",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/EncodersAbsolutosRepetidos",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FE absoluto",
+            "x": 0.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Leitura (graus)",
+            "x": 192.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/EncoderAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Ângulo (graus)",
+            "x": 384.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Absoluto − NEO 550",
+            "x": 576.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/DiferencaAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Razão abs/NEO",
+            "x": 768.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Giro/RazaoAbsolutoPorMotor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Hz (~976)",
+            "x": 960.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/EncoderAbsolutoHz",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FE: linha para SwerveConstants (rodas retas, desabilitado)",
+            "x": 0.0,
+            "y": 192.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/OffsetParaCopiar",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FD absoluto",
+            "x": 0.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Leitura (graus)",
+            "x": 192.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/EncoderAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Ângulo (graus)",
+            "x": 384.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Absoluto − NEO 550",
+            "x": 576.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/DiferencaAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Razão abs/NEO",
+            "x": 768.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Giro/RazaoAbsolutoPorMotor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Hz (~976)",
+            "x": 960.0,
+            "y": 288.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/EncoderAbsolutoHz",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FD: linha para SwerveConstants (rodas retas, desabilitado)",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/OffsetParaCopiar",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TE absoluto",
+            "x": 0.0,
+            "y": 480.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Leitura (graus)",
+            "x": 192.0,
+            "y": 480.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/EncoderAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Ângulo (graus)",
+            "x": 384.0,
+            "y": 480.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Absoluto − NEO 550",
+            "x": 576.0,
+            "y": 480.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/DiferencaAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Razão abs/NEO",
+            "x": 768.0,
+            "y": 480.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Giro/RazaoAbsolutoPorMotor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Hz (~976)",
+            "x": 960.0,
+            "y": 480.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/EncoderAbsolutoHz",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TE: linha para SwerveConstants (rodas retas, desabilitado)",
+            "x": 0.0,
+            "y": 576.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/OffsetParaCopiar",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TD absoluto",
+            "x": 0.0,
+            "y": 672.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/EncoderAbsolutoConectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Leitura (graus)",
+            "x": 192.0,
+            "y": 672.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/EncoderAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Ângulo (graus)",
+            "x": 384.0,
+            "y": 672.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/AnguloGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Absoluto − NEO 550",
+            "x": 576.0,
+            "y": 672.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/DiferencaAbsolutoGraus",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Razão abs/NEO",
+            "x": 768.0,
+            "y": 672.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Giro/RazaoAbsolutoPorMotor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Hz (~976)",
+            "x": 960.0,
+            "y": 672.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/EncoderAbsolutoHz",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TD: linha para SwerveConstants (rodas retas, desabilitado)",
+            "x": 0.0,
+            "y": 768.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/OffsetParaCopiar",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Saúde",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Falha",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1152.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Falha",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Bateria (V)",
+            "x": 0.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Robo/BateriaVolts",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Brownout",
+            "x": 192.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Robo/Brownout",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4294198070,
+              "false_color": 4283215696,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Pigeon",
+            "x": 384.0,
+            "y": 96.0,
+            "width": 192.0,
+            "height": 96.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Giroscopio/Conectado",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Pigeon: estado",
+            "x": 576.0,
+            "y": 96.0,
+            "width": 576.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/Giroscopio/Estado",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Bateria (V)",
+            "x": 0.0,
+            "y": 192.0,
+            "width": 1152.0,
+            "height": 192.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Robo/BateriaVolts",
+              "period": 0.06,
+              "data_type": "double",
+              "time_displayed": 30.0,
+              "color": 4282091354,
+              "line_width": 2.0,
+              "min_value": 6.0,
+              "max_value": 14.0
+            }
+          },
+          {
+            "title": "FE: avisos",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/FalhasAtivas",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Tração fw",
+            "x": 0.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Tracao/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro fw",
+            "x": 0.0,
+            "y": 576.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/Giro/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Reinícios tração",
+            "x": 0.0,
+            "y": 672.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FE/ReiniciosTracao",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "FD: avisos",
+            "x": 288.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/FalhasAtivas",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Tração fw",
+            "x": 288.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Tracao/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro fw",
+            "x": 288.0,
+            "y": 576.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/Giro/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Reinícios tração",
+            "x": 288.0,
+            "y": 672.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/FD/ReiniciosTracao",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TE: avisos",
+            "x": 576.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/FalhasAtivas",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Tração fw",
+            "x": 576.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Tracao/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro fw",
+            "x": 576.0,
+            "y": 576.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/Giro/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Reinícios tração",
+            "x": 576.0,
+            "y": 672.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TE/ReiniciosTracao",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "TD: avisos",
+            "x": 864.0,
+            "y": 384.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/FalhasAtivas",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Tração fw",
+            "x": 864.0,
+            "y": 480.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Tracao/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Giro fw",
+            "x": 864.0,
+            "y": 576.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/Giro/Firmware",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Reinícios tração",
+            "x": 864.0,
+            "y": 672.0,
+            "width": 288.0,
+            "height": 96.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Swerve/TD/ReiniciosTracao",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1221 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 832,
+      "state": {
+        "sidebar": {
+          "width": 300,
+          "expanded": [
+            "/SmartDashboard",
+            "/SmartDashboard/Swerve"
+          ]
+        },
+        "tabs": {
+          "selected": 0,
+          "tabs": [
+            {
+              "type": 3,
+              "title": "1 - Campo 3D: robô, rodas e rastro",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/SmartDashboard/Swerve/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "FRC9460 - Base Swerve"
+                    }
+                  },
+                  {
+                    "type": "swerveStates",
+                    "logKey": "/SmartDashboard/Swerve/EstadosMedidos",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "swerveStates",
+                    "logKey": "/SmartDashboard/Swerve/EstadosAlvo",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "/SmartDashboard/Swerve/Rastro",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#f4d03f",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "game": "FRC:2026 Field"
+              },
+              "controllerUUID": "781b1a6dc456503e90957e5489fdeb01",
+              "renderer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  0,
+                  6,
+                  -12
+                ],
+                "cameraTarget": [
+                  0,
+                  0.3,
+                  0
+                ]
+              },
+              "controlsHeight": 260
+            },
+            {
+              "type": 3,
+              "title": "2 - Robô de perto: rodas (ciano = medido, laranja = alvo)",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/SmartDashboard/Swerve/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "FRC9460 - Base Swerve"
+                    }
+                  },
+                  {
+                    "type": "swerveStates",
+                    "logKey": "/SmartDashboard/Swerve/EstadosMedidos",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "swerveStates",
+                    "logKey": "/SmartDashboard/Swerve/EstadosAlvo",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  }
+                ],
+                "game": "FRC:2026 Field"
+              },
+              "controllerUUID": "4745437058a358a9939508a3ca24cf99",
+              "renderer": {
+                "cameraIndex": -2,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  1.4,
+                  1.2,
+                  1.4
+                ],
+                "cameraTarget": [
+                  0,
+                  0.3,
+                  0
+                ]
+              },
+              "controlsHeight": 260
+            },
+            {
+              "type": 2,
+              "title": "3 - Campo 2D: odometria e rastro",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "/SmartDashboard/Swerve/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": ""
+                    }
+                  },
+                  {
+                    "type": "swerveStates",
+                    "logKey": "/SmartDashboard/Swerve/EstadosMedidos",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "swerveStates",
+                    "logKey": "/SmartDashboard/Swerve/EstadosAlvo",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "/SmartDashboard/Swerve/Rastro",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#f4d03f",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 0,
+                "size": "large"
+              },
+              "controllerUUID": "72e37a48bab857d4b0fdf7829aaef072",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 9,
+              "title": "4 - Swerve: alvo (laranja) x medido (ciano)",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "states",
+                    "logKey": "/SmartDashboard/Swerve/EstadosMedidos",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "/SmartDashboard/Swerve/EstadosAlvo",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "chassisSpeeds",
+                    "logKey": "/SmartDashboard/Swerve/VelocidadesChassi",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2"
+                    }
+                  },
+                  {
+                    "type": "rotation",
+                    "logKey": "/SmartDashboard/Swerve/Rotacao",
+                    "logType": "Rotation2d",
+                    "visible": true,
+                    "options": {}
+                  }
+                ],
+                "maxSpeed": 4.8,
+                "sizeX": 0.5842,
+                "sizeY": 0.5842,
+                "orientation": 1
+              },
+              "controllerUUID": "13f374dac53050fc89ffe4b13234f45b",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "5 - Chassi: velocidade (m/s) | giro (graus/s)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/VelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/GiroGrausPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Pilotagem",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Comando",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "bdfccc9cbf5a5afe9e0f92f9972ae060",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "6 - Odometria: X e Y (m) | frente do robô (graus)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/PoseXMetros",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e53935",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/PoseYMetros",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FrenteGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/Giroscopio/YawGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#f4d03f",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Giroscopio/Conectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Giroscopio/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "fa5f09127ca258a992f7a0279d8e788f",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "7 - Giro FE e FD: alvo (degrau) x medido (graus)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FE/AnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FD/AnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FE/AlvoAnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FD/AlvoAnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "06ef43fcbdb052ce9f6f3e4d5fbc9fb0",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "8 - Giro TE e TD: alvo (degrau) x medido (graus)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TE/AnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TD/AnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TE/AlvoAnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TD/AlvoAnguloGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "c6c2f900c762534ca5c42244ba232383",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "9 - Tração FE e FD: alvo (degrau) x medido (m/s)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FE/VelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FD/VelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FE/AlvoVelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FD/AlvoVelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "f8ce8144775a5b83b5643473dde3ddf4",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "10 - Tração TE e TD: alvo (degrau) x medido (m/s)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TE/VelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TD/VelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TE/AlvoVelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TD/AlvoVelocidadeMetrosPorSeg",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Estado",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "a09763fba5175456973f2d0a6dd0110b",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "11 - Corrente: tração | giro (A)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FE/Tracao/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FD/Tracao/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TE/Tracao/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TD/Tracao/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FE/Giro/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FD/Giro/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TE/Giro/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TD/Giro/CorrenteAmps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "803aa5fd8fa35651a392b57470380c24",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "12 - Tensão aplicada: tração | giro (V)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FE/Tracao/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FD/Tracao/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TE/Tracao/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TD/Tracao/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FE/Giro/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FD/Giro/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TE/Giro/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TD/Giro/Tensao",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "6e950faabaad537ea4794e788b215381",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "13 - Encoders absolutos: leitura | diferença para o NEO 550 (graus)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FE/EncoderAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/FD/EncoderAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TE/EncoderAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Swerve/TD/EncoderAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FE/DiferencaAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/FD/DiferencaAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TE/DiferencaAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "/SmartDashboard/Swerve/TD/DiferencaAbsolutoGraus",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/FE/EncoderAbsolutoConectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/FD/EncoderAbsolutoConectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/TE/EncoderAbsolutoConectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/TD/EncoderAbsolutoConectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/EncodersAbsolutosRepetidos",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e53935"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "9292a623eef0519294d97123ea54a572",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 1,
+              "title": "14 - Saúde: bateria (V)",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "/SmartDashboard/Robo/BateriaVolts",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Robo/Brownout",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e53935"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/FE/Conectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#00bcd4"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/FD/Conectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/TE/Conectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/TD/Conectado",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#b47be2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "/SmartDashboard/Swerve/Falha",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#e53935"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "ddec9592c57b542e943bf37806e53e01",
+              "renderer": null,
+              "controlsHeight": 230
+            },
+            {
+              "type": 4,
+              "title": "15 - Status e calibração dos módulos",
+              "controller": [
+                "/SmartDashboard/Swerve/Pilotagem",
+                "/SmartDashboard/Swerve/Estado",
+                "/SmartDashboard/Swerve/Falha",
+                "/SmartDashboard/Swerve/Giroscopio/Estado",
+                "/SmartDashboard/Swerve/FE/Configuracao",
+                "/SmartDashboard/Swerve/FE/FalhasAtivas",
+                "/SmartDashboard/Swerve/FE/OffsetParaCopiar",
+                "/SmartDashboard/Swerve/FE/Giro/RazaoAbsolutoPorMotor",
+                "/SmartDashboard/Swerve/FE/EncoderAbsolutoHz",
+                "/SmartDashboard/Swerve/FE/ReiniciosTracao",
+                "/SmartDashboard/Swerve/FE/Tracao/Firmware",
+                "/SmartDashboard/Swerve/FE/Giro/Firmware",
+                "/SmartDashboard/Swerve/FD/Configuracao",
+                "/SmartDashboard/Swerve/FD/FalhasAtivas",
+                "/SmartDashboard/Swerve/FD/OffsetParaCopiar",
+                "/SmartDashboard/Swerve/FD/Giro/RazaoAbsolutoPorMotor",
+                "/SmartDashboard/Swerve/FD/EncoderAbsolutoHz",
+                "/SmartDashboard/Swerve/FD/ReiniciosTracao",
+                "/SmartDashboard/Swerve/FD/Tracao/Firmware",
+                "/SmartDashboard/Swerve/FD/Giro/Firmware",
+                "/SmartDashboard/Swerve/TE/Configuracao",
+                "/SmartDashboard/Swerve/TE/FalhasAtivas",
+                "/SmartDashboard/Swerve/TE/OffsetParaCopiar",
+                "/SmartDashboard/Swerve/TE/Giro/RazaoAbsolutoPorMotor",
+                "/SmartDashboard/Swerve/TE/EncoderAbsolutoHz",
+                "/SmartDashboard/Swerve/TE/ReiniciosTracao",
+                "/SmartDashboard/Swerve/TE/Tracao/Firmware",
+                "/SmartDashboard/Swerve/TE/Giro/Firmware",
+                "/SmartDashboard/Swerve/TD/Configuracao",
+                "/SmartDashboard/Swerve/TD/FalhasAtivas",
+                "/SmartDashboard/Swerve/TD/OffsetParaCopiar",
+                "/SmartDashboard/Swerve/TD/Giro/RazaoAbsolutoPorMotor",
+                "/SmartDashboard/Swerve/TD/EncoderAbsolutoHz",
+                "/SmartDashboard/Swerve/TD/ReiniciosTracao",
+                "/SmartDashboard/Swerve/TD/Tracao/Firmware",
+                "/SmartDashboard/Swerve/TD/Giro/Firmware"
+              ],
+              "controllerUUID": "0e0c16fcfa565083bdc5cc05387d36d7",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 8,
+              "title": "16 - Controle do piloto",
+              "controller": [
+                "Xbox Controller (Blue)",
+                "None",
+                "None",
+                "None",
+                "None",
+                "None"
+              ],
+              "controllerUUID": "279a4f0d3d875f5fa3e7965dcc67298c",
+              "renderer": null,
+              "controlsHeight": 85
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "26.0.0"
+}
